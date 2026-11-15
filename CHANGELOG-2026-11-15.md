@@ -23,3 +23,8 @@
 ## Scientific limitation retained intentionally
 
 The current 14-record library does not provide a verified, controlled larger-versus-smaller sample comparison of ignition success. The assistant is now instructed to say that the collection does not establish whether larger samples are harder to ignite, rather than substituting flame-spread or large-scale-fire findings as proof.
+
+## Multi-turn chat fix
+- Fixed conversation validation so the 2,000-character limit applies to user questions, not Gemini's longer answers.
+- Preserved the latest user question while pruning the oldest complete turns if accumulated chat history exceeds the request-size budget.
+- Added regression checks for follow-up questions, long AI answers, oversized user questions, and history pruning.

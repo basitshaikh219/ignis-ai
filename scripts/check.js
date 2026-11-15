@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { R, VER, citeKey } from "../public/js/data/records.js";
 import { buildSystemPrompt } from "../server/prompt.js";
+import { cleanMessages } from "../server/ai.js";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 let problems = 0;
@@ -40,6 +41,37 @@ for (const phrase of [
 }
 if (!researchPrompt.includes("CITATION KEY: [NTRS 20210011521]")) fail("Saffire IV/V citation key missing from assistant context");
 console.log("Assistant evidence guardrails checked.");
+
+// Regression tests for multi-turn chat history.
+const longAnswer = "A".repeat(2600);
+const twoTurnHistory = cleanMessages([
+  { role: "user", content: "First question?" },
+  { role: "assistant", content: longAnswer },
+  { role: "user", content: "A follow-up question?" }
+]);
+if (!twoTurnHistory || twoTurnHistory.length !== 3 || twoTurnHistory[1].content.length !== 2600) {
+  fail("multi-turn chat must accept assistant answers longer than 2,000 characters");
+}
+if (cleanMessages([{ role: "user", content: "Q".repeat(2001) }]) !== null) {
+  fail("user questions longer than 2,000 characters must be rejected");
+}
+if (cleanMessages([
+  { role: "user", content: "Question?" },
+  { role: "assistant", content: "Answer." }
+]) !== null) {
+  fail("chat history must end with a user message");
+}
+const oversizedHistory = cleanMessages([
+  { role: "user", content: "Old question?" },
+  { role: "assistant", content: "X".repeat(5000) },
+  { role: "user", content: "Recent question?" },
+  { role: "assistant", content: "Y".repeat(3000) },
+  { role: "user", content: "Newest follow-up?" }
+]);
+if (!oversizedHistory || oversizedHistory[oversizedHistory.length - 1].content !== "Newest follow-up?") {
+  fail("long conversations must retain the newest question while pruning old context");
+}
+console.log("Multi-turn chat regression checks passed.");
 
 
 // Secrets must never be committed or served.

@@ -38,15 +38,25 @@ export function cleanMessages(input) {
   const msgs = input.slice(-8)
     .filter(m => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
     .map(m => ({ role: m.role, content: m.content }));
-  if (msgs.some(m => m.content.length > 2000)) return null;
+  // The 2,000-character limit applies to user questions, not Gemini answers.
+  // Rejecting longer assistant answers caused follow-up turns to fail.
+  if (msgs.some(m => m.role === "user" && m.content.length > 2000)) return null;
   while (msgs.length && msgs[0].role !== "user") msgs.shift();
   const out = [];
   for (const m of msgs) {
-    if (out.length && out[out.length - 1].role === m.role) out[out.length - 1].content += "\n" + m.content;
+    if (out.length && out[out.length - 1].role === m.role) out[out.length - 1].content += "\\n" + m.content;
     else out.push({ ...m });
   }
   if (!out.length || out[out.length - 1].role !== "user") return null;
-  if (out.reduce((n, m) => n + m.content.length, 0) > 9000) return null;
+
+  // Keep the newest conversation context within the request-size budget.
+  // Drop oldest complete turns, never the newest user question.
+  const totalChars = () => out.reduce((n, m) => n + m.content.length, 0);
+  while (totalChars() > 9000 && out.length > 1) {
+    out.shift(); // oldest user message
+    if (out.length && out[0].role === "assistant") out.shift();
+  }
+  if (!out.length || out[out.length - 1].role !== "user" || totalChars() > 9000) return null;
   return out;
 }
 
