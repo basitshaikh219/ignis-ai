@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { R } from "../public/js/data/records.js";
+import { R, VER, citeKey } from "../public/js/data/records.js";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 let problems = 0;
@@ -17,14 +17,34 @@ for (const r of R) {
   for (const k of ["id", "t", "url", "rid", "sum", "q", "qs", "p"]) if (!r[k]) fail(`${r.id}: missing ${k}`);
   if (!/^https:\/\//.test(r.url || "")) fail(`${r.id}: url must start with https://`);
   if (!Array.isArray(r.f) || !r.f.length) fail(`${r.id}: no findings`);
+  if (!VER[r.ver]) fail(`${r.id}: ver must be full, abstract or excerpt`);
+  if (!Array.isArray(r.unc) || !Array.isArray(r.lim)) fail(`${r.id}: unc and lim arrays are required`);
+  for (const f of r.f) if (!["Experimental observation", "Quantitative measurement", "Model prediction", "Authors’ interpretation"].includes(f[0])) fail(`${r.id}: unknown finding type ${f[0]}`);
 }
+const keys = new Set(R.map(citeKey));
+if (keys.size !== R.length) fail("duplicate citation keys");
 console.log(`Records checked: ${R.length}`);
+
+// Secrets must never be committed or served.
+const secretRe = /sk-ant-[A-Za-z0-9_-]{10,}/;
+function walkAll(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap(d => {
+    if (["node_modules", ".git", "dist"].includes(d.name)) return [];
+    return d.isDirectory() ? walkAll(path.join(dir, d.name)) : [path.join(dir, d.name)];
+  });
+}
+for (const f of walkAll(root)) {
+  if (/\.(png|ico|zip)$/.test(f)) continue;
+  if (path.basename(f) === ".env") { console.warn("Note: a local .env exists. Keep it out of GitHub (it is in .gitignore)."); continue; }
+  if (secretRe.test(fs.readFileSync(f, "utf8"))) fail("possible API key in " + path.relative(root, f));
+}
+for (const f of ["api/chat.js", "api/health.js", "vercel.json"]) if (!fs.existsSync(path.join(root, f))) fail("missing " + f);
 
 function walk(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(d =>
     d.isDirectory() ? walk(path.join(dir, d.name)) : [path.join(dir, d.name)]);
 }
-for (const f of [...walk(path.join(root, "public")), ...walk(path.join(root, "server")), path.join(root, "server.js")]) {
+for (const f of [...walk(path.join(root, "public")), ...walk(path.join(root, "server")), ...walk(path.join(root, "api")), path.join(root, "server.js")]) {
   if (!f.endsWith(".js")) continue;
   try { execFileSync(process.execPath, ["--check", f], { stdio: "pipe" }); }
   catch (e) { fail("syntax error in " + path.relative(root, f) + "\n" + e.stderr); }

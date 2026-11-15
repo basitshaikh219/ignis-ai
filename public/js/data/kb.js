@@ -1,13 +1,20 @@
-// Background facts (from the NASA Space Apps challenge brief) and offline fallback answers.
-export const KB=`Facts from the challenge background:
-- Without buoyancy flames rely on diffusion for oxygen; a candle flame becomes a blue sphere.
-- NASA fire safety: prevention (ignition control, material selection, flammability limits), detection, suppression.
-- Spacesuits: 100% O2 at 4.3 psi; Earth sea level 14.7 psi. Moon base/rovers expected 30% O2 or more at 10.2 psi or less, over 40% more O2 than air.
-- Flammability depends strongly on O2 concentration; airflow also matters in microgravity.
-- Solid-material studies: BASS, BASS-II, Saffire-I/-II/-III. Detection: SAME, SAME-R (instrument reused for dust in DAFT, DAFT-2). Suppression: FLEX with CO2 and helium dilution.
-- ACME: six gaseous-fuel experiments in the Combustion Integrated Rack; CFI-G reached up to 85% O2; BRE studies flammability in still atmospheres vs material properties; E-FIELD mimics partial gravity with electric fields.
-- FLEX, FLEX-2, CFI use droplets in MDCA. BASS, BASS-II, SPICE, SLICE use the glovebox flow duct.
-- PSI has no partial-gravity combustion data yet; LUCI and FM2 are expected to add some.
-- Rocket/propellant fire safety is mostly outside PSI scope.
-- Earth spin-offs: fine-water-mist extinguishers, smoke detection, firefighter gear.`;
-export const QA=[["flame sphere","Without gravity there is no buoyancy, so hot gases do not rise. Oxygen arrives by diffusion, giving a dim blue sphere instead of a teardrop."],["oxygen moon","Moon habitats are expected at 30% O₂ or more at 10.2 psi or less, over 40% more O₂ than air. Flammability depends strongly on oxygen, so materials burn more easily."],["partial gravity","PSI has no partial-gravity combustion data yet. LUCI and FM2 may add some. E-FIELD mimics partial gravity with electric fields."],["suppress extinguish","FLEX tested suppression by diluting the atmosphere with carbon dioxide and helium, both of which suppress fire."],["smoke detect","SAME and SAME-R tested smoke detection in microgravity on the ISS."],["rocket propellant","Rocket and propellant fires are mostly outside PSI’s scope, because high velocities make combustion nearly independent of gravity."]];
+// Background facts from the NASA Space Apps challenge brief (NOT library evidence) and offline fallback answers.
+export const KB=`Background facts from the NASA Space Apps "Flame in Freefall" challenge brief (these are context, not library evidence):
+- In microgravity, buoyancy-driven convection is greatly reduced. Oxygen and heat are then carried by diffusion and by any forced or ventilation flow. A quiescent flame can look like a rounder, bluer shape; flames in forced flow can look different.
+- NASA spacecraft fire safety covers prevention (ignition control, material selection, flammability limits), detection, and suppression.
+- Spacesuits: 100% oxygen at 4.3 psi; Earth sea level 14.7 psi. Lunar habitats and rovers are expected to use more than 30% oxygen at 10.2 psi or less (more than 40% more oxygen than air).
+- Flammability depends strongly on oxygen concentration, and also on pressure, airflow, fuel properties, geometry and ignition conditions. Oxygen concentration alone does not determine ignition risk.
+- Investigations named in the brief: BASS and BASS-II and Saffire (solids), SAME and SAME-R (smoke detection), FLEX (suppression by diluting with CO2 and helium), ACME (gaseous fuels; CFI-G reached up to 85% oxygen), E-FIELD Flames (mimics partial gravity with an electric field).
+- The PSI database has no partial-gravity combustion data yet; LUCI and FM2 are expected to add some.
+- Rocket and propellant fire safety is mostly outside PSI scope.
+- Earth spin-offs named in the brief: fine-water-mist extinguishers, smoke detection, firefighter gear.`;
+
+const FB="Built-in fallback answer (not a live AI response): ";
+export const QA=[
+["flame sphere round blue shape",FB+"With buoyancy greatly reduced in microgravity, hot gases no longer rise strongly, so flames are often rounder and bluer than on Earth. Oxygen and heat are still carried by diffusion and by any airflow, such as ventilation. The flame shape depends on those conditions, so this is a general description, not a result from one experiment. See the Research Library for specific studies."],
+["oxygen moon lunar habitat",FB+"Lunar habitats are expected to use 30% oxygen or more at 10.2 psi or less. Higher oxygen can make some materials more flammable, but ignition and flame spread also depend on pressure, airflow, the fuel, its shape and the ignition source. Oxygen alone cannot establish ignition risk. In the library, only one study group (Saffire V) tested around 71 kPa with 25 to 26% oxygen, and none tested 30% or more."],
+["partial gravity moon mars",FB+"The challenge brief says the PSI database has no partial-gravity combustion data yet. LUCI and FM2 may add some. Microgravity and normal-gravity results may bound what happens, but that has not been shown here."],
+["suppress extinguish extinguishment",FB+"Library evidence is limited. FLEX droplet tests (liquid fuel, quiescent) varied carbon dioxide and helium dilution; the Saffire IV and V paper reports that extinguishment cannot be assumed to be quick without flow. These do not show how to suppress a real cabin fire."],
+["smoke detect detector",FB+"Library studies suggest that in low gravity smoke particles can stay near the source longer, and that early detection targets pyrolysis products rather than soot. SAME tested overheated spacecraft materials, not flames."],
+["rocket propellant",FB+"Rocket and propellant fires are mostly outside the PSI database’s scope, because high velocities make combustion nearly independent of gravity."]
+];

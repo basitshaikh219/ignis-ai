@@ -1,99 +1,67 @@
 # IGNIS AI
 
-IGNIS AI is an independent research tool for exploring NASA microgravity fire-safety studies, built for the NASA Space Apps Challenge "Flame in Freefall".
-**It is not a NASA product, is not endorsed by NASA, and is not a certified fire-safety system.**
+IGNIS AI is an independent research exploration and decision-support prototype for the NASA Space Apps Challenge
+"Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data".
+**It is not a NASA product, NASA does not endorse it, and it is not an operational spacecraft fire-safety system.**
 
 ## What it contains
-- Home with a flame demo and dashboard statistics computed from the real records
-- Explore (weighted ranking with placeholder estimates), Research Library (search and filters), study detail pages
-- Comparison Lab with fair-comparison statuses, Fire Safety Insights with research gaps
-- Science, Methodology, About pages
-- An AI research assistant (needs an API key on the server; without one it uses built-in fallback answers)
-- A PDF text checker (runs in your browser)
+- Home with a dashboard computed from the real records, and an educational flame illustration
+- Explore: prototype relevance ranking (editorial estimates, with the formula shown)
+- Research Library: 14 real NASA and journal records with search and filters; each links to its source and shows what was actually read
+- Study pages: conditions, sample size and uncertainty, findings grouped by evidence type, limitations
+- Comparison Lab: per-field comparability statuses and an overall verdict that refuses unsupported conclusions
+- Fire Safety Insights and Research Gaps
+- Science, Methodology, About
+- AI assistant (live Claude through a server route, or labelled built-in fallback answers) and a browser-side PDF text checker
 
 ## Technology
-Plain HTML, CSS and JavaScript (ES modules, no framework, no bundler) plus a small zero-dependency Node.js server (`server.js`).
-The server hosts the website and a safe `/api/chat` endpoint that calls the Anthropic API, so your API key stays on the server and never reaches the browser.
+Plain HTML, CSS and JavaScript (ES modules, no framework, no bundler) and Node.js serverless functions (`api/`).
+Locally, `server.js` serves the site and the same functions. Zero npm dependencies.
 
 ## Folder layout
 ```
-ignis-ai/
-  package.json        project settings and commands
-  server.js           web server + /api/chat + /api/health
-  .env.example        template for your settings (copy to .env)
-  .gitignore
-  README.md
-  scripts/check.js    validates the data and checks all JavaScript (npm run build)
-  server/prompt.js    the assistant's rules and the records it may cite
-  public/
-    index.html        all pages (one page app, hash links like #library)
-    favicon.svg
-    css/styles.css
-    js/main.js        application logic
-    js/data/records.js   research library records (edit here to add studies)
-    js/data/profiles.js  placeholder investigation profiles for Explore
-    js/data/kb.js        background facts and offline fallback answers
+api/chat.js, api/health.js   Vercel serverless functions (POST /api/chat, GET /api/health)
+server/ai.js                 shared assistant logic (validation, rate limit, Anthropic call, errors)
+server/prompt.js             assistant rules + the records it may cite
+server.js                    local development server (uses server/ai.js)
+vercel.json                  Vercel settings (output folder, function limits, headers)
+scripts/check.js             validates data, scans for secrets, syntax-checks all JavaScript
+public/                      the website (index.html, css/, js/, js/data/records.js ...)
+.env.example                 placeholders only
 ```
 
-## Install on Windows (one time)
-1. Install **Node.js LTS** from https://nodejs.org (accept the defaults). Version 18 or newer works.
-2. Install **Visual Studio Code** from https://code.visualstudio.com
-3. Unzip the project, then in VS Code choose File > Open Folder and select the `ignis-ai` folder.
-4. Open the terminal: Terminal > New Terminal (it opens PowerShell).
-5. Check Node is installed:
+## Run locally on Windows (PowerShell, inside the project folder)
 ```powershell
-node -v
-npm -v
-```
-
-## Run locally
-```powershell
+node -v                          # Node.js 18 or newer
 npm install
-Copy-Item .env.example .env
-npm start
+Copy-Item .env.example .env      # then edit .env and paste your key after ANTHROPIC_API_KEY=
+npm start                        # open http://localhost:3000
+npm run build                    # validates data, scans for secrets, checks JavaScript
 ```
-Open http://localhost:3000 in your browser. Press Ctrl+C in the terminal to stop.
-(`npm install` has no packages to download; it simply prepares the project.)
+Without a key the site works and the assistant says it is in fallback mode.
 
-Without an API key the site works fully, and the assistant answers a few common questions from a built-in list. To enable the AI assistant:
-1. Create an API key at https://console.anthropic.com (API usage is billed to your account; set a spending limit there).
-2. Open `.env` in VS Code and paste it after `ANTHROPIC_API_KEY=` (no quotes, no spaces).
-3. Check `ANTHROPIC_MODEL` against the model names in Anthropic's documentation.
-4. Stop the server (Ctrl+C) and run `npm start` again. The terminal should say "AI assistant: enabled".
-
-Never share `.env` or commit it to GitHub (`.gitignore` already excludes it).
-
-## "Build" for production
+## Test (Windows PowerShell, inside the project folder)
 ```powershell
-npm run build
+npm test            # same as: npm run build. Validates the records, scans for secrets, syntax-checks all JavaScript
+npm start           # then open http://localhost:3000/api/health
 ```
-This validates the research records and checks every JavaScript file. The site has no compile step, so there is nothing else to generate.
+Without a key, `/api/health` must show `"aiConfigured":false`, and the Ask AI page must say "Fallback mode" and label every answer "Built-in fallback answer". With a valid key in `.env`, it shows `"aiConfigured":true` and the page says "Live AI mode".
+Manual check: open every menu page, search the Library, open a study, compare two studies, ask the assistant a question.
 
-## Deploy publicly (example: Render, free tier available)
-1. Create a GitHub account and a new empty repository.
-2. In the VS Code terminal:
-```powershell
-git init
-git add .
-git commit -m "IGNIS AI"
-git branch -M main
-git remote add origin https://github.com/YOUR-NAME/ignis-ai.git
-git push -u origin main
-```
-3. At https://render.com choose New > Web Service, connect the repository, and set:
-   - Runtime: Node
-   - Build Command: `npm install && npm run build`
-   - Start Command: `npm start`
-   - Environment variables: `ANTHROPIC_API_KEY` (your key) and `ANTHROPIC_MODEL`
-4. Deploy. Render gives you a public URL. Visitors do not need a Claude account.
-Other hosts that run Node (Railway, Fly.io, an Azure/AWS VM) work the same way. Static-only hosts (GitHub Pages, Netlify drop) can show the site but cannot run the AI endpoint, so the assistant would use fallback answers.
+## Deploy on Vercel
+1. Push the project to GitHub. Check that `.env` is NOT tracked: `git ls-files .env` should print nothing.
+2. In Vercel, import the repository. Framework Preset: Other. `vercel.json` sets the build command and output folder (`public`).
+3. Project > Settings > Environment Variables: add `ANTHROPIC_API_KEY` (value = your key; Production, and Preview if you want; use the Sensitive option).
+4. Deployments > the latest deployment > Redeploy. Environment variable changes only apply to NEW deployments.
+5. Open `https://YOUR-SITE.vercel.app/api/health`. It must show `"aiConfigured":true`. Then ask the assistant a question.
 
-## Adding or fixing research records
-Edit `public/js/data/records.js`. Each record needs `id`, `t` (title), `url`, `rid`, `sum`, `q`, `qs` (where the question came from), `p`, and `f` (findings). Never add a finding, number or link you have not verified in the source. Run `npm run build` to validate.
+## Adding or fixing records
+Edit `public/js/data/records.js`. Never add a value, citation or link you have not verified. Set `ver` honestly (`full`, `abstract` or `excerpt`) and run `npm run build`.
 
 ## Known limitations
-- The library holds 11 records, read at abstract level only (all marked "Unverified candidate source"). It is not the whole NTRS or PSI database.
-- Explore scores are placeholder estimates, not NASA ratings.
-- The PDF checker extracts text from the first 5 pages only, does not validate it, and does not add it to the library. It loads pdf.js from cdnjs, so it needs an internet connection, as do the Google Fonts (fallback fonts are used offline).
-- The AI assistant can be wrong. It is instructed to cite only the library records and to say when evidence is insufficient. Verify important claims in the original papers.
-- Rate limit: 15 AI questions per minute per visitor, to protect your API budget.
+- 14 hand-selected records, most read at abstract level; not all of NTRS or the PSI database. No raw PSI data.
+- Explore scores are editorial estimates, not NASA ratings.
+- The Comparison Lab compares reported text fields, not raw measurements.
+- Rate limiting is per server instance (best effort): serverless instances do not share memory.
+- PDF checker and web fonts load from the internet (cdnjs, Google Fonts); it extracts text only and validates nothing.
+- The AI can be wrong. Citations are checked against the library, but the explanation text is not.
