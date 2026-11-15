@@ -1,4 +1,4 @@
-// IGNIS AI server: serves the website and a safe /api/chat proxy to the Anthropic API.
+// IGNIS AI server: serves the website and a safe /api/chat proxy to the Google Gemini API.
 // Zero dependencies. Requires Node.js 18 or newer.
 import http from "node:http";
 import fs from "node:fs";
@@ -82,5 +82,5 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   const c = config();
   console.log(`IGNIS AI running at http://localhost:${PORT}`);
-  console.log(c.key ? `AI assistant: enabled (model ${c.model})` : "AI assistant: no API key set, using built-in fallback answers");
+  console.log(c.key ? `AI assistant: enabled with Google Gemini (model ${c.model})` : "AI assistant: no API key set, using built-in fallback answers");
 });

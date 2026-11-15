@@ -26,7 +26,7 @@ if (keys.size !== R.length) fail("duplicate citation keys");
 console.log(`Records checked: ${R.length}`);
 
 // Secrets must never be committed or served.
-const secretRe = /sk-ant-[A-Za-z0-9_-]{10,}/;
+const secretRe = /(?:sk-ant-[A-Za-z0-9_-]{10,}|AIza[0-9A-Za-z_-]{30,})/;
 function walkAll(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(d => {
     if (["node_modules", ".git", "dist"].includes(d.name)) return [];
