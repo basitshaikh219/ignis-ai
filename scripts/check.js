@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { R, VER, citeKey } from "../public/js/data/records.js";
+import { buildSystemPrompt } from "../server/prompt.js";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 let problems = 0;
@@ -24,6 +25,22 @@ for (const r of R) {
 const keys = new Set(R.map(citeKey));
 if (keys.size !== R.length) fail("duplicate citation keys");
 console.log(`Records checked: ${R.length}`);
+
+// Guardrails that prevent the assistant from confusing ignition, spread and scale.
+const researchPrompt = buildSystemPrompt();
+for (const phrase of [
+  "A lower flame-spread rate does NOT establish a lower probability of ignition",
+  "direct comparison",
+  "Do not treat thicker as interchangeable with larger",
+  "Model prediction",
+  "Search excerpt only (unverified)",
+  "The current IGNIS collection does not establish whether larger samples are harder to ignite"
+]) {
+  if (!researchPrompt.includes(phrase)) fail("assistant evidence policy is missing: " + phrase);
+}
+if (!researchPrompt.includes("CITATION KEY: [NTRS 20210011521]")) fail("Saffire IV/V citation key missing from assistant context");
+console.log("Assistant evidence guardrails checked.");
+
 
 // Secrets must never be committed or served.
 const secretRe = /(?:sk-ant-[A-Za-z0-9_-]{10,}|AIza[0-9A-Za-z_-]{30,})/;

@@ -15,6 +15,17 @@ IGNIS AI is an independent research exploration and decision-support prototype f
 - AI research assistant: live Google Gemini through a server-side API route, or clearly labelled built-in fallback answers
 - Browser-side PDF text checker
 
+## Assistant evidence safeguards
+
+The assistant receives the same 14 structured research records shown in the library. Its server-side instructions require it to:
+- answer the specific outcome asked about (ignition, flame spread, growth, extinction, smoke or heat release);
+- distinguish direct evidence from indirect context;
+- keep observations, quantitative measurements, model predictions and authors' interpretations separate;
+- preserve experimental conditions and disclose whether a source was reviewed in full, by abstract only, or from a search excerpt;
+- avoid universal safety conclusions and state when the current collection does not support an answer.
+
+For example, a lower flame-spread rate is not treated as proof of lower ignition probability, and a large-scale spacecraft fire test is not treated as a controlled larger-versus-smaller sample ignition experiment. Citations must match exact keys in the library; unknown citation identifiers are visibly marked as unverified.
+
 ## Technology
 Plain HTML, CSS and JavaScript (ES modules, no framework or bundler), Node.js serverless functions (`api/`), and a small local Node.js server. The Gemini connection uses Google's HTTPS API directly, so no extra npm dependency is required.
 

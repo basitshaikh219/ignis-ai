@@ -101,7 +101,7 @@ function studyPage(r){
  $("askst").onclick=()=>{location.hash="#ask";$("q").value="Explain "+citeKey(r)+": what was observed, under what conditions, and what can’t be concluded?";$("q").focus()};
 }
 const KEYS=new Map(R.map(r=>[citeKey(r),r]));
-function inl(el,t){t.split(/(\*\*[^*]+\*\*|NTRS \d{8,11}|10\.\d{4,}\/[^\s\]\),;]*[^\s\]\),;.])/).forEach(p=>{if(!p)return;
+function inl(el,t){t.split(/(\*\*[^*]+\*\*|NTRS \d{8,11}|(?:10|1\.0)\.\d{4,}\/[^\s\]\),;]*[^\s\]\),;.])/).forEach(p=>{if(!p)return;
  if(/^\*\*/.test(p)){const b=document.createElement("strong");b.textContent=p.slice(2,-2);el.append(b)}
  else if(/^NTRS \d{8,11}$/.test(p)||/^10\.\d{4,}\//.test(p)){const rec=KEYS.get(p);
   if(rec){const a=document.createElement("a");a.href=rec.url;a.target="_blank";a.rel="noopener";a.textContent=p;a.title=rec.t;el.append(a)}
