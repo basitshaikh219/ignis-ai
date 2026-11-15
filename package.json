@@ -1,0 +1,14 @@
+{
+  "name": "ignis-ai",
+  "version": "1.0.0",
+  "description": "IGNIS AI: an independent research tool for NASA microgravity fire safety studies (NASA Space Apps Challenge).",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "check": "node scripts/check.js",
+    "build": "node scripts/check.js"
+  }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="description" content="IGNIS AI: an independent research tool exploring NASA microgravity fire safety studies. Not a NASA product.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IGNIS AI: space fire research intelligence</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<main><nav aria-label="Main"><a class="brand" href="#home">IGNIS AI</a><a href="#explore">Explore</a><a href="#library">Library</a><a href="#compare">Comparison Lab</a><a href="#insights">Insights</a><a href="#science">Science</a><a href="#ask">Ask AI</a><a href="#method">Methodology</a><a href="#about">About</a></nav><div class="pg" id="p-inv"></div><div class="pg" id="p-study"></div><div class="pg" id="p-library"><h1 style="margin-top:32px;font-size:2.2rem">Research Library</h1><p class="sub">Real NASA Technical Reports Server (NTRS) records and papers about microgravity fire research. Each is a candidate source: IGNIS has read the abstract-level text only, not the full paper.</p>
+<div class="panel ctrls"><label>Search<input id="ls" type="text" style="width:100%;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;font:inherit" placeholder="e.g. smoke, PMMA, Saffire"></label><label>Topic<select id="lc"></select></label><label>Platform<select id="lp"></select></label></div>
+<div class="panel" style="margin-top:12px"><label>Check a PDF (stays in your browser; text extraction only)<input id="pdf" type="file" accept="application/pdf"></label><div id="pdfr" class="sub" style="margin-top:8px"></div></div><p class="sub" id="lcount" style="margin-top:12px"></p><div class="lib" id="lib"></div></div>
+<div class="pg" id="p-method"><h1 style="margin-top:32px;font-size:2.2rem">Methodology and sources</h1><div class="cols" style="margin-top:16px">
+<div class="panel"><h3>Where research comes from</h3><p>Records were found by searching NASA’s Technical Reports Server (NTRS) and, where noted, journal papers with a DOI. Every item links to its original page.</p></div>
+<div class="panel"><h3>How sources are checked</h3><p>Each record is marked “Unverified candidate source”. Only abstract-level text and search excerpts were read. Detailed findings, page and figure references are not extracted yet. Open the original to verify.</p></div>
+<div class="panel"><h3>Evidence labels</h3><p>Experimental observation, quantitative measurement, model prediction, authors’ statement, and IGNIS interpretation are kept apart. Unknown values show “Not reported in retrieved source”.</p></div>
+<div class="panel"><h3>Ranking</h3><p>The Explore ranking is a weighted relevance score using placeholder estimates. It measures relevance, not scientific quality or safety.</p></div>
+<div class="panel"><h3>AI assistant</h3><p>It answers from the records in the library plus general science, labels what it infers, and should say when evidence is insufficient. It can still make mistakes.</p></div>
+<div class="panel"><h3>Current limits</h3><p>The library holds a small sample, not all of NTRS or the PSI database. Comparison Lab, cross-study insights and PDF extraction are not built yet.</p></div></div></div>
+<div class="pg" id="p-insights"><h1 style="margin-top:32px;font-size:2.2rem">Fire Safety Insights</h1><p class="sub">IGNIS interpretations built from the library records. They are not NASA conclusions. Records are abstract-level only.</p><div id="ins"></div></div><div class="pg" id="p-home">
+<header class="hero">
+  <div>
+    <h1>IGNIS AI</h1>
+    <p>Space fire research intelligence: how fire behaves without gravity, and what it means for the Moon and Mars.<br><small id="stat" style="color:var(--mute)"></small></p>
+  </div>
+  <div class="stage">
+    <svg viewBox="0 0 260 240" role="img" aria-label="Flame shape comparison">
+      <g class="shape" id="tearShape"><g class="tear"><path d="M130 30 C150 80 190 120 170 175 C160 205 100 205 90 175 C70 120 110 80 130 30Z" fill="#FFB85C"/><path d="M130 90 C142 120 160 140 150 175 C145 192 115 192 110 175 C100 140 120 120 130 90Z" fill="#FFE7B0"/></g></g>
+      <g class="shape" id="sphereShape" style="opacity:0"><circle cx="130" cy="120" r="62" fill="#2F8FE0" opacity=".35"/><circle cx="130" cy="120" r="50" fill="none" stroke="#63C7FF" stroke-width="10" opacity=".9"/></g>
+    </svg>
+    <div class="seg" role="group" aria-label="Gravity">
+      <button id="g1" aria-pressed="true">Earth gravity</button>
+      <button id="g0" aria-pressed="false">Freefall</button>
+    </div>
+    <div id="gtext" class="o2">With gravity, hot gases rise and pull in fresh air, giving a flickering teardrop.</div>
+    <div class="o2" style="margin-top:14px">
+      <label for="o2r">Oxygen in the cabin: <span id="o2v">21</span>%</label>
+      <input id="o2r" type="range" min="21" max="85" value="21">
+      <span id="o2t"></span>
+    </div>
+  </div>
+</header><section id="dash"></section><h2 style="margin-top:56px">Explore the Evidence</h2><div class="home-links" style="margin-top:16px"><a href="#library">Research Library<small>Search real NASA records</small></a><a href="#compare">Comparison Lab<small>Fair side-by-side checks</small></a><a href="#insights">Fire Safety Insights<small>What studies suggest, and gaps</small></a><a href="#ask">AI Research Assistant<small>Evidence-based answers</small></a></div><section class="panel gap">
+  <h2>Known gap: partial gravity</h2>
+  <p class="sub" style="margin:0">The PSI database has no partial-gravity combustion data yet. Moon and Mars gravity results are expected from LUCI and FM2. Until then, microgravity and normal-gravity results bound what to expect, and E-FIELD Flames mimics partial gravity with an electric field.</p>
+</section>
+
+</div><div class="pg" id="p-explore"><section>
+  <h2>Rank investigations for your mission</h2>
+  <p class="sub">Choose a habitat and set what matters. Scores update as you change them.</p>
+  <div class="panel ctrls">
+    <label>Habitat
+      <select id="env">
+        <option value="craft">Spacecraft cabin (ISS-like air)</option>
+        <option value="lunar" selected>Lunar base (30% O₂ or more, 10.2 psi or less)</option>
+        <option value="rover">Pressurized rover</option>
+        <option value="mars">Mars surface habitat</option>
+      </select>
+    </label>
+    <label>Focus
+      <select id="cat">
+        <option value="all">All fire safety areas</option>
+        <option>Prevention</option><option>Detection</option><option>Suppression</option><option>Related</option>
+      </select>
+    </label>
+    <label>Fuel
+      <select id="fuel">
+        <option value="all">All fuels</option><option>Solid</option><option>Gas</option><option>Liquid droplet</option><option>Aerosol</option>
+      </select>
+    </label>
+  </div>
+  <div class="panel ctrls" style="margin-top:12px" id="weights"></div>
+</section>
+
+<section class="layout">
+  <div class="panel" id="list" aria-live="polite"></div>
+  <aside class="panel insight" id="detail"></aside>
+</section>
+
+</div><div class="pg" id="p-compare"><h1 style="margin-top:32px;font-size:2.2rem">Comparison Lab</h1><p class="sub">Select two library studies. Each row shows whether the two can fairly be compared. Missing values are never filled in.</p>
+<div class="panel ctrls"><label>Study A <select id="lA"></select></label><label>Study B <select id="lB"></select></label></div><div id="lres" style="margin-top:16px"></div>
+<h2 style="margin-top:56px">Investigation profiles (placeholder estimates)</h2><section>
+  <h2>Compare two investigations</h2>
+  <p class="sub">Select any two below to see how hardware, fuels and fire safety roles differ.</p>
+  <div class="panel ctrls">
+    <label>First <select id="cA"></select></label>
+    <label>Second <select id="cB"></select></label>
+  </div>
+  <div class="panel tablewrap" style="margin-top:12px" id="cmp"></div>
+</section>
+
+</div><div class="pg" id="p-science"><h1 style="margin-top:32px;font-size:2.2rem">The science behind the flames</h1>
+<section class="cols">
+<div class="panel"><h3>Flames without buoyancy</h3><p>On Earth, hot gas rises and draws fresh air in, which makes a candle flame a flickering teardrop. In freefall nothing rises, so oxygen reaches the flame only by diffusion. The flame becomes a dim blue sphere.</p></div>
+<div class="panel"><h3>Why oxygen is the key variable</h3><p>Flammability depends strongly on oxygen concentration. Spacesuits hold 100% oxygen at 4.3 psi, against 14.7 psi at sea level on Earth. Moon habitats and rovers are expected to sit between, likely 30% oxygen or more at 10.2 psi or less. That is over 40% more oxygen than air, so materials burn more easily.</p></div>
+<div class="panel"><h3>Airflow</h3><p>Airflow also matters in microgravity. Ventilation can feed a flame or blow it out, so test conditions record flow speed alongside oxygen.</p></div>
+</section>
+<h2 style="margin-top:32px">Three layers of fire safety</h2>
+<section class="cols">
+<div class="panel"><h3>Prevention</h3><p>Control ignition sources and choose materials using flammability limits. Studied in BASS, BASS-II and Saffire-I to -III.</p></div>
+<div class="panel"><h3>Detection</h3><p>Smoke behaves differently without gravity. SAME and SAME-R tested detection on the ISS.</p></div>
+<div class="panel"><h3>Suppression</h3><p>FLEX diluted the chamber atmosphere with carbon dioxide and helium, both of which suppress fire.</p></div>
+</section>
+<h2 style="margin-top:32px">Hardware families</h2>
+<div class="panel tablewrap"><table><thead><tr><th>Hardware</th><th>Investigations</th><th>Fuels</th></tr></thead><tbody>
+<tr><td>ACME hardware in the Combustion Integrated Rack</td><td>Six ACME experiments, including BRE, CFI-G, E-FIELD</td><td>Gas</td></tr>
+<tr><td>MDCA in the Combustion Integrated Rack</td><td>FLEX, FLEX-2, CFI</td><td>Liquid droplets</td></tr>
+<tr><td>Glovebox flow duct built for SPICE</td><td>BASS, BASS-II, SPICE, SLICE</td><td>Solid and gas</td></tr></tbody></table></div></div><div class="pg" id="p-ask"><h1 style="margin-top:32px;font-size:2.2rem">Ask the assistant</h1>
+<p class="sub">Answers are grounded in the challenge background below, then in general combustion science. It should say when something is uncertain or not in the data.</p>
+<div class="panel"><div class="sug" id="sug"></div><div class="chat" id="chat" aria-live="polite"><div class="m a">Ask about flames in microgravity, oxygen levels, detection, suppression, or what the data cannot yet tell us.</div></div>
+<form class="ask" id="f" onsubmit="return false"><input type="text" id="q" aria-label="Your question" placeholder="Why does a flame become a sphere in freefall?"><button id="go">Ask</button></form><p class="sub" id="mode" style="margin:8px 0 0;font-size:.85rem"></p></div></div><div class="pg" id="p-about"><h1 style="margin-top:32px;font-size:2.2rem">About and limits</h1>
+<section class="cols">
+<div class="panel"><h3>How rankings work</h3><p>Each investigation has four 0–5 scores. Your sliders weight them. In non-spacecraft habitats, high-oxygen and partial-gravity-relevant work gets a small bonus. The scores are my editorial estimates, not NASA ratings.</p></div>
+<div class="panel"><h3>What this site cannot do</h3><p>It is not connected to the live PSI database, so it holds no raw measurements. Fire safety for rockets and propellants is outside PSI’s scope. Do not use this site for real material or hardware decisions.</p></div>
+<div class="panel"><h3>The assistant’s limits</h3><p>An AI model writes the answers. It can be wrong or out of date. Check important claims against NASA’s PSI database and the published papers.</p></div>
+</section>
+<footer><p>IGNIS AI is an independent prototype for the NASA Space Apps Challenge. It is not a NASA product, is not endorsed by NASA, and is not a certified fire-safety system.</p></footer></div></main>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
