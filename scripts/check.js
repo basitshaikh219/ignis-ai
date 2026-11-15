@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { R, VER, citeKey } from "../public/js/data/records.js";
+import { findFallback } from "../public/js/data/kb.js";
 import { buildSystemPrompt } from "../server/prompt.js";
 import { cleanMessages } from "../server/ai.js";
 
@@ -72,6 +73,17 @@ if (!oversizedHistory || oversizedHistory[oversizedHistory.length - 1].content !
   fail("long conversations must retain the newest question while pruning old context");
 }
 console.log("Multi-turn chat regression checks passed.");
+
+// Regression tests for offline fallback intent matching.
+const microgravityFallback = findFallback("What is microgravity?");
+if (!microgravityFallback.includes("Gravity is still present") || microgravityFallback.includes("PSI database")) {
+  fail("microgravity question must return its own definition, not the partial-gravity fallback");
+}
+const partialGravityFallback = findFallback("What do we know about partial gravity on the Moon and Mars?");
+if (!partialGravityFallback.includes("PSI database has no partial-gravity combustion data yet")) {
+  fail("partial-gravity question must still return the partial-gravity fallback");
+}
+console.log("Fallback intent-matching regression checks passed.");
 
 
 // Secrets must never be committed or served.
